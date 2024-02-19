@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="main.css">
+    <title>Библиотека</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+        .all_cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            /* Расстояние между элементами */
+            justify-content: center;
+            /* Центрирование элементов по горизонтали */
+        }
+
+        .product-item {
+            width: 300px;
+            text-align: center;
+            margin: 0 auto;
+            border-bottom: 2px solid #F5F5F5;
+            background: white;
+            font-family: "Open Sans";
+            transition: .3s ease-in;
+        }
+
+        .product-item:hover {
+            border-bottom: 2px solid #fc5a5a;
+        }
+
+        .product-item img {
+            text-align: center;
+            display: block;
+            width: 100%;
+        }
+
+        .product-list {
+            background: #fafafa;
+            padding: 15px 0;
+        }
+
+        .product-list h3 {
+            font-size: 18px;
+            font-weight: 400;
+            color: #2e2e2e;
+            margin: 0 0 10px 0;
+        }
+
+        .price {
+            font-size: 16px;
+            color: #fc5a5a;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .button {
+            text-decoration: none;
+            display: inline-block;
+            padding: 0 12px;
+            background: #cccccc;
+            color: white;
+            text-transform: uppercase;
+            font-size: 12px;
+            line-height: 28px;
+            transition: .3s ease-in;
+        }
+
+        .product-item:hover .button {
+            background: #fc5a5a;
+        }
+
+        .all_cards {
+            list-style-type: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+
+        <input type="checkbox" id="side-checkbox" />
+        <div class="side-panel">
+            <label class="side-button-2" for="side-checkbox">+</label>
+            <div class="side-title">Фильтры:</div>
+
+            <div class="container">
+                <div class="dropdown" onmouseover="showDropdown1()" onmouseout="hideDropdown1()">
+                    <span>Жанры</span>
+                    <div class="dropdown-content" id="myDropdown1">
+                        <a href="#">Эпос</a>
+                        <a href="#">Драма</a>
+                        <a href="#">Лирика</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="dropdown" onmouseover="showDropdown2()" onmouseout="hideDropdown2()">
+                    <span>Авторы</span>
+                    <div class="dropdown-content" id="myDropdown2">
+                        <a href="#">Пушкин</a>
+                        <a href="#">Тургенев</a>
+                        <a href="#">Онегин</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="side-button-1-wr">
+            <label class="side-button-1" for="side-checkbox">
+                <div class="side-b side-open">ФИЛЬТРЫ</div>
+                <div class="side-b side-close">ФИЛЬТРЫ</div>
+            </label>
+        </div>
+
+        <div id="searchBox">
+            <input type="text" placeholder="Поиск">
+        </div>
+        <div id="links">
+            <a href="regist.html">АККАУНТ</a>
+            <a href="#">МОИ КНИГИ</a>
+        </div>
+    </header>
+
+    <script>
+        function showDropdown1() {
+            document.getElementById("myDropdown1").style.display = "block";
+        }
+
+        function hideDropdown1() {
+            document.getElementById("myDropdown1").style.display = "none";
+        }
+
+        function showDropdown2() {
+            document.getElementById("myDropdown2").style.display = "block";
+        }
+
+        function hideDropdown2() {
+            document.getElementById("myDropdown2").style.display = "none";
+        }
+
+    </script>
+    </header>
+    <section class='content'>
+        <ul id="myList" class="all_cards">
+
+        </ul>
+    </section>
+    <footer>
+    </footer>
+    <script type="application/javascript">
+
+        async function getResponse(url) {
+            let response = await fetch(url); //делаем запрос по адресу url
+            let content = await response.json(); //получаем данные и преобразуем их в json
+
+            var list = document.getElementById("myList"); //ищем элемент с id="myList"
+
+            content.forEach(function (b) {  //перебираем все элементы, которые к нам пришли от сервера
+                var listItem = document.createElement("li"); // добавляем к списку элемент li
+                listItem.className = 'card'; // Устанавливаем класс для элемента списка
+                //добавляем книгу и динамически вставляем элементы книги
+                listItem.innerHTML = `     
+    <div class="product-item">
+    <a href="book.html " id="book${b.id}" class="book_id">
+        <img id="img" src="${b.image}" style="height: 65%; width: 65%;">
+    </a>
+        <div class="product-list">
+            <h3>${b.name}</h3>
+                <span class="price">${b.year}</span>
+                <a href="" class="button">Забронировать</a>
+        </div>
+    </div>
+`
+                list.appendChild(listItem);  //добавляем к списку книгу
+
+                //ищем элемент с id="book${b.id}" и добавляем ему событие.
+                //После делаем запрос к серверу на получание книги по ее id
+                document.getElementById(`book${b.id}`).addEventListener('click', function () {
+                    let res = fetch(`http://localhost:8086/books/${b.id}`);
+                })
+
+            });
+
+        }
+        getResponse('http://localhost:8086/books');
+
+    </script>
+</body>
+
+</html>
